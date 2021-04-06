@@ -81,15 +81,15 @@ def getUserFavs(uid):
     return jsonify(result), 200
 
 
-@app.route('/user/<int:uid>/fav/', methods=['POST'])
-def postUserFavs(uid):
+# @app.route('/user/<int:uid>/fav/', methods=['POST'])
+# def postUserFavs(uid):
 
-    request_body = request.get_json()
-    fav = Favorites(name=request_body["name"])
-    db.session.add(fav)
-    db.session.commit()
+#     request_body = request.get_json()
+#     fav = Favorites(name=request_body["name"])
+#     db.session.add(fav)
+#     db.session.commit()
 
-    return jsonify(fav), 200
+#     return jsonify(fav), 200
 
     
     
