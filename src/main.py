@@ -43,7 +43,6 @@ def getFav():
 
     fav_query = Favorites.query.all()
     all_favs = list(map(lambda x: x.serialize(), fav_query))
-
     return jsonify(all_favs), 200
 
 @app.route('/planet', methods=['GET'])
@@ -51,17 +50,49 @@ def getPlanet():
 
     planet_query = Planets.query.all()
     all_planets = list(map(lambda x: x.serialize(), planet_query))
-
     return jsonify(all_planets), 200
 
-@app.route('/people', methods=['GET'])
-def getPeople():
+@app.route('/planet/<int:plid>', methods=['GET'])
+def getPlanetId(plid):
 
-    people_query = People.query.all()
-    all_people = list(map(lambda x: x.serialize(), people_query))
+    planet = Planets.query.get(plid)
+    if planet is None:
+        raise APIException('Planet not found', status_code=404)
+    result = planet.serialize()
+    return jsonify(result), 200
 
-    return jsonify(all_people), 200
+@app.route('/people/<int:pid>', methods=['GET'])
+def getPeopleId(pid):
 
+    person = People.query.get(pid)
+    if person is None:
+        raise APIException('Person not found', status_code=404)
+    result = person.serialize()
+    return jsonify(result), 200
+
+@app.route('/user/<int:uid>/fav/', methods=['GET'])
+def getUserFavs(uid):
+
+    user = User.query.filter_by(id=uid).first()
+    if user is None:
+        raise APIException('User favorites not found', status_code=404)
+    fav = Favorites.query.filter_by(user_id=uid).first()
+    result = fav.serialize()
+    return jsonify(result), 200
+
+
+@app.route('/user/<int:uid>/fav/', methods=['POST'])
+def postUserFavs(uid):
+
+    request_body = request.get_json()
+    fav = Favorites(name=request_body["name"])
+    db.session.add(fav)
+    db.session.commit()
+
+    return jsonify(fav), 200
+
+    
+    
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
