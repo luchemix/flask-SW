@@ -89,6 +89,6 @@ class Favorites(db.Model):
         return {
             "name": self.name,
             "user_id": self.user_id,
-            "character_id": self.people_id,
+            "people_id": self.people_id,
             "planet_id": self.planet_id,
         }
